@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # ==================== 常量定义 ====================
 
-DEFAULT_TIMEOUT = 120  # 默认超时（秒）
+DEFAULT_TIMEOUT = 300  # 默认超时（秒，首次 npx 下载约 30-60 秒）
 RENDER_TIMEOUT = 600  # 渲染超时（秒）
 WORKSPACE_ENV_VAR = "HYPERFRAMES_WORKSPACE_DIR"
 
