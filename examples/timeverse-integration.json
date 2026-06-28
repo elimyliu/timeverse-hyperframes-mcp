@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "hyperframes": {
+      "description": "HyperFrames MCP — 将 HTML/CSS/JS 渲染为 MP4 视频。支持 init / preview / render / lint / TTS / transcribe",
+      "command": "uvx",
+      "args": ["timeverse-hyperframes-mcp"]
+    }
+  }
+}

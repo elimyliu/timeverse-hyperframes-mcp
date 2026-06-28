@@ -1,0 +1,20 @@
+[project]
+name = "timeverse-hyperframes-mcp"
+version = "0.1.0"
+description = "MCP server wrapping HyperFrames CLI — turn HTML/CSS/JS into MP4 videos"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+timeverse-hyperframes-mcp = "timeverse_hyperframes_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
