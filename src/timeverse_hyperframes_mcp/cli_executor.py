@@ -34,13 +34,28 @@ WORKSPACE_ENV_VAR = "HYPERFRAMES_WORKSPACE_DIR"
 
 # ==================== 核心方法 ====================
 
+def _resolve_hyperframes_command() -> tuple[list[str], str]:
+    """
+    解析 hyperframes 可执行路径。
+    优先使用全局安装的 hyperframes，否则回退到 npx hyperframes。
+
+    Returns:
+        (cmd_parts, display_name)
+        如 (["hyperframes"], "hyperframes") 或 (["npx", "hyperframes"], "npx hyperframes")
+    """
+    global_cmd = shutil.which("hyperframes")
+    if global_cmd:
+        return [global_cmd], "hyperframes"
+    return ["npx", "hyperframes"], "npx hyperframes"
+
+
 async def run_hyperframes(
     args: list[str],
     cwd: Optional[str] = None,
     timeout: int = DEFAULT_TIMEOUT,
 ) -> dict:
     """
-    执行 npx hyperframes <args> 命令
+    执行 hyperframes <args> 命令（优先全局命令，回退 npx）
 
     Args:
         args: 子命令及参数列表，如 ["init", "my-video", "--non-interactive"]
@@ -59,8 +74,9 @@ async def run_hyperframes(
     Raises:
         TimeoutError: 命令执行超时
     """
-    cmd = ["npx", "hyperframes", *args]
-    cmd_str = " ".join(cmd)
+    base_cmd, display_name = _resolve_hyperframes_command()
+    cmd = [*base_cmd, *args]
+    cmd_str = f"{display_name} {' '.join(args)}"
 
     if cwd is None:
         cwd = os.environ.get(WORKSPACE_ENV_VAR, os.getcwd())
@@ -90,10 +106,11 @@ async def run_hyperframes(
     except asyncio.TimeoutError:
         raise TimeoutError(f"命令超时（{timeout}s）: {cmd_str}")
     except FileNotFoundError:
+        hints = "请安装 Node.js >= 22，或执行 npm install -g hyperframes 全局安装"
         return {
             "success": False,
             "stdout": "",
-            "stderr": "未找到 npx，请确认 Node.js >= 22 已安装",
+            "stderr": f"未找到 hyperframes / npx 命令。{hints}",
             "exit_code": -1,
             "command": cmd_str,
         }
